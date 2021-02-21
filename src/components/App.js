@@ -1,90 +1,100 @@
 import React, { Component, useState } from "react";
 import "../styles/App.css";
-class Timer extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      time: 0,
-      x: 0,
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state={
+      renderBall:false, 
+      time: 0, 
+      x: 0, 
       y: 0,
-      status: 0,
+      top:0,
+      left:0,
+      srartTime:0,
     };
+    this.buttonClickHandler=this.buttonClickHandler.bind(this);
+    this.handeleventlistner=this.handeleventlistner.bind(this);
+    this.tick=this.tick.bind(this);
   }
 
-  handleIncrement = () => {
-    if(this.state.x !== 250 && this.state.y !==250){
-      this.setState({
-        status: 1,
-      });
-      this.clock = setInterval(() => {
-        this.setState({
-          time: this.state.time + 1,
-        });
-        // console.log(this.state.time);
-      }, 1000);
-    }
-  };
-
-  move = (evt) => {
-    if (this.state.status == 1) {
-      // console.log(this.state.status);
-      if (evt.keyCode === 37) {
-        this.setState({
-          y: this.state.y - 5,
-        });
-      } else if (evt.keyCode === 38) {
-        this.setState({
-          x: this.state.x - 5,
-        });
-      } else if (evt.keyCode === 39) {
-        this.setState({
-          y: this.state.y + 5,
-        });
-      } else if (evt.keyCode === 40) {
-        this.setState({
-          x: this.state.x + 5,
-        });
-      }
-      if (this.state.x == 250 && this.state.y == 250) {
-        this.setState({
-          status: 0,
-        });
-        clearInterval(this.clock);
-        document.removeEventListener("keydown", this.move);
-      }
-    }
-  };
-  componentDidMount() {
-    document.addEventListener("keydown", this.move);
-    return () => {
-      document.removeEventListener("keydown", this.move);
-    };
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.clock);
-  }
-
-  render() {
-    return (
-      <>
-        <div
-          style={{
-            position: "absolute",
-            top: this.state.x,
-            left: this.state.y,
-          }}
-          className="ball"
-        ></div>
-        <button className="start ballProvider" onClick={this.handleIncrement}>
-          Start
-        </button>
-        <div className="heading-timer">{this.state.time}</div>
-
-        <div className="hole"></div>
-      </>
+  buttonClickHandler(){
+    document.addEventListener("keydown",this.handeleventlistner);
+    clearInterval(this.timerID);
+    this.setState({renderBall:true, time: 0, x: 0, y: 0 ,top:0,left:0,startTime:Date.now()})
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
     );
+  }
+
+  tick() {
+    if(!(this.state.x ==250 &&this.state.y==250)){
+      let timePassed= Date.now() - this.state.startTime ;
+      let sec=Math.floor(timePassed/(1000));
+      this.setState({
+      time:sec
+      });
+    }
+  }
+
+  handeleventlistner(e){
+    let code=e.keyCode;
+    
+    if(code==39 && !(this.state.x ==250 &&this.state.y==250)){
+        this.setState({
+            x: this.state.left+5, y: this.state.top ,top:this.state.top,left:this.state.left+5
+        });
+    }
+    if(code==37  && !(this.state.x ==250 &&this.state.y==250)){
+        
+        this.setState({
+          
+         x: this.state.left-5, y: this.state.top ,top:this.state.top,left:this.state.left-5
+      });
+    }
+    if(code==38 && !(this.state.x ==250 &&this.state.y==250)){
+        this.setState({
+          
+          x: this.state.left, y:this.state.top-5 ,top:this.state.top-5,left:this.state.left
+      });
+    }
+    if(code==40 && !(this.state.x ==250 &&this.state.y==250)){
+        this.setState({
+          
+          x:this.state.left, y: this.state.top+5 ,top:this.state.top+5,left:this.state.left
+      });
+    }
+    if(this.state.x==250 && this.state.y==250){
+      alert(this.state.time);
+      clearInterval(this.timerID);
+      this.setState({renderBall:false, time: 0, x: 0, y: 0 ,top:0,left:0,startTime:0})
+      document.removeEventListener("keydown",this.handeleventlistner);
+    }
+  }
+
+    renderBallOrButton(){
+    if (this.state.renderBall) {
+        return (  
+          <>
+          <div className="ball" style={{ position:"absolute",top:this.state.top +"px",
+          left:this.state.left +"px",}}></div>
+          <div className="hole" ></div>
+          <div className="heading-timer">{this.state.time}</div>
+        </>
+        );
+    } 
+    else
+        return <button onClick={this.buttonClickHandler} className="start">Start</button>
+  }
+
+  render(){
+    return (
+      <div>
+          {this.renderBallOrButton()}
+      </div>
+    )
   }
 }
 
-export default Timer;
+export default App;
