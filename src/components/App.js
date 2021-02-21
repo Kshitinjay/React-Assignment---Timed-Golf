@@ -44,6 +44,7 @@ class Timer extends React.Component {
       }
       if (this.state.x == 250 && this.state.y == 250) {
         clearInterval(this.clock);
+        document.removeEventListener("keydown", this.move);
       }
     }
   };
