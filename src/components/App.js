@@ -19,12 +19,13 @@ class Timer extends React.Component {
       this.setState({
         time: this.state.time + 1,
       });
+      // console.log(this.state.time);
     }, 1000);
   };
 
   move = (evt) => {
     if (this.state.status == 1) {
-      console.log(this.state.status);
+      // console.log(this.state.status);
       if (evt.keyCode === 37) {
         this.setState({
           y: this.state.y - 5,
