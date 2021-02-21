@@ -12,15 +12,17 @@ class Timer extends React.Component {
   }
 
   handleIncrement = () => {
-    this.setState({
-      status: 1,
-    });
-    this.clock = setInterval(() => {
+    if(this.state.x !== 250 && !this.state.y !==250){
       this.setState({
-        time: this.state.time + 1,
+        status: 1,
       });
-      // console.log(this.state.time);
-    }, 1000);
+      this.clock = setInterval(() => {
+        this.setState({
+          time: this.state.time + 1,
+        });
+        // console.log(this.state.time);
+      }, 1000);
+    }
   };
 
   move = (evt) => {
