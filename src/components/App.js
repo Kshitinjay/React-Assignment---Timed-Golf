@@ -12,7 +12,7 @@ class Timer extends React.Component {
   }
 
   handleIncrement = () => {
-    if(this.state.x !== 250 && !this.state.y !==250){
+    if(this.state.x !== 250 && this.state.y !==250){
       this.setState({
         status: 1,
       });
@@ -46,6 +46,9 @@ class Timer extends React.Component {
         });
       }
       if (this.state.x == 250 && this.state.y == 250) {
+        this.setState({
+          status: 0,
+        });
         clearInterval(this.clock);
         document.removeEventListener("keydown", this.move);
       }
